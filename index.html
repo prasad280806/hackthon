@@ -1,298 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Wellness Sections</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Ikigai for Teens</title>
 
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: "Segoe UI", sans-serif;
-    }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", sans-serif;
+}
 
-    body {
-      background: #fff4f7;
-      color: #3a2b2f;
-    }
 
-    /* ================= NAVBAR ================= */
-    .navbar {
-      background: linear-gradient(90deg, #f3a1b3, #f8c3d0);
-      height: 72px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 40px;
-      position: sticky;
-      top: 0;
-      z-index: 1000;
-      box-shadow: 0 4px 18px rgba(0,0,0,0.1);
-    }
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 22px;
-      font-weight: 700;
-      color: #fff;
-      cursor: pointer;
-      transition: transform 0.3s ease;
-    }
+body {
+  background: radial-gradient(circle at center, #1b0f2a, #06040d);
+  color: #e6dfff;
+  overflow-x: hidden;
+}
 
-    .logo:hover {
-      transform: scale(1.05);
-    }
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
 
-    .nav-links {
-      display: flex;
-      align-items: center;
-      gap: 26px;
-    }
 
-    .nav-links a {
-      position: relative;
-      text-decoration: none;
-      color: white;
-      font-size: 16px;
-      font-weight: 500;
-      padding: 6px 2px;
-    }
 
-    .nav-links a::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      bottom: 0;
-      width: 0%;
-      height: 2px;
-      background: white;
-      transition: width 0.3s ease;
-    }
+.navbar {
+  background: rgba(40,20,70,0.7);
+  backdrop-filter: blur(12px);
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 40px;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 0 20px rgba(160,100,255,0.3);
+}
 
-    .nav-links a:hover::after {
-      width: 100%;
-    }
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  color: #e0c3ff;
+  cursor: pointer;
+}
 
-    .nav-icons span {
-      margin-left: 18px;
-      font-size: 18px;
-      cursor: pointer;
-      transition: transform 0.25s ease;
-      color: white;
-    }
+.nav-links {
+  display: flex;
+  gap: 26px;
+}
 
-    .nav-icons span:hover {
-      transform: scale(1.3);
-    }
+.nav-links a {
+  text-decoration: none;
+  color: #ddd;
+  font-size: 16px;
+}
 
-    /* ================= SECTIONS ================= */
-    .section {
-      max-width: 1200px;
-      margin: 80px auto;
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      align-items: center;
-      gap: 60px;
-      padding: 0 30px;
-      transition: transform 0.4s ease;
-    }
+.nav-links a:hover {
+  color: #c084fc;
+}
 
-    .section:hover {
-      transform: translateY(-6px);
-    }
+.nav-icons span {
+  margin-left: 18px;
+  font-size: 18px;
+  cursor: pointer;
+  color: #ddd;
+}
 
-    .section.reverse {
-      direction: rtl;
-    }
 
-    .section.reverse > * {
-      direction: ltr;
-    }
 
-    .img-box {
-      position: relative;
-      overflow: hidden;
-      border-radius: 22px;
-      box-shadow: 0 14px 35px rgba(243,161,179,0.4);
-      transition: transform 0.5s ease, box-shadow 0.5s ease;
-      cursor: pointer;
-    }
+.section {
+  max-width: 1200px;
+  margin: 80px auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding: 30px;
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(14px);
+  border-radius: 22px;
+  border: 1px solid rgba(200,150,255,0.2);
+  box-shadow: 0 0 40px rgba(170,120,255,0.15);
+}
 
-    .img-box img {
-      width: 100%;
-      height: 320px;
-      object-fit: cover;
-      transition: transform 0.6s ease;
-    }
+.section.reverse {
+  direction: rtl;
+}
 
-    .img-box:hover img {
-      transform: scale(1.12);
-    }
+.section.reverse > * {
+  direction: ltr;
+}
 
-    .img-box::after {
-      content: "Explore →";
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(243,161,179,0.55), rgba(243,161,179,0.15));
-      color: white;
-      font-size: 20px;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.4s ease;
-    }
+.img-box {
+  overflow: hidden;
+  border-radius: 22px;
+}
 
-    .img-box:hover::after {
-      opacity: 1;
-    }
+.img-box img {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
 
-    .text-box h2 {
-      font-size: 36px;
-      color: #b03b5b;
-      margin-bottom: 16px;
-      transition: color 0.3s ease, transform 0.3s ease;
-    }
+.img-box:hover img {
+  transform: scale(1.1);
+}
 
-    .section:hover .text-box h2 {
-      color: #e66a8d;
-      transform: translateX(4px);
-    }
+.text-box h2 {
+  font-size: 34px;
+  color: #d9b3ff;
+  margin-bottom: 16px;
+}
 
-    .text-box p {
-      font-size: 18px;
-      line-height: 1.75;
-      color: #5a4048;
-      margin-bottom: 18px;
-    }
+.text-box p {
+  font-size: 18px;
+  line-height: 1.7;
+  color: #ccc;
+  margin-bottom: 18px;
+}
 
-    .features {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-bottom: 18px;
-    }
+.features {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 18px;
+}
 
-    .feature-pill {
-      background: linear-gradient(135deg, #ffd1dc, #ffb3c6);
-      color: #8a2d4b;
-      padding: 8px 14px;
-      border-radius: 20px;
-      font-size: 14px;
-      font-weight: 600;
-      box-shadow: 0 4px 10px rgba(243,161,179,0.3);
-      transition: transform 0.3s ease;
-      cursor: pointer;
-    }
+.feature-pill {
+  background: rgba(140,90,255,0.2);
+  color: #d9b3ff;
+  padding: 8px 14px;
+  border-radius: 20px;
+  font-size: 14px;
+  border: 1px solid rgba(200,150,255,0.3);
+}
 
-    .feature-pill:hover {
-      transform: scale(1.08);
-    }
 
-    .cta-btn {
-      display: inline-block;
-      margin-top: 10px;
-      background: linear-gradient(135deg, #f3a1b3, #f8c3d0);
-      color: white;
-      padding: 12px 22px;
-      border-radius: 25px;
-      font-weight: 700;
-      text-decoration: none;
-      box-shadow: 0 6px 18px rgba(243,161,179,0.4);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
 
-    .cta-btn:hover {
-      transform: translateY(-3px) scale(1.05);
-      box-shadow: 0 12px 30px rgba(243,161,179,0.6);
-    }
+.cta-btn {
+  display: inline-block;
+  margin-top: 10px;
+  background: linear-gradient(135deg, #7c4dff, #c084fc);
+  color: white;
+  padding: 12px 22px;
+  border-radius: 25px;
+  font-weight: 700;
+  text-decoration: none;
+  box-shadow: 0 0 20px rgba(160,100,255,0.6);
+  transition: 0.3s ease;
+}
 
-    /* ================= FLOATING BUTTONS ================= */
-    .whatsapp-btn {
-      position: fixed;
-      bottom: 95px;
-      right: 25px;
-      background: #ff6f91;
-      color: white;
-      width: 56px;
-      height: 56px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 28px;
-      box-shadow: 0 6px 20px rgba(255,111,145,0.4);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      animation: pulse 2.2s infinite;
-    }
+.cta-btn:hover {
+  transform: scale(1.07);
+}
 
-    .whatsapp-btn:hover {
-      transform: scale(1.15);
-      box-shadow: 0 12px 32px rgba(255,111,145,0.6);
-      animation: none;
-    }
 
-    .chat-btn {
-      position: fixed;
-      bottom: 25px;
-      right: 25px;
-      background: linear-gradient(135deg, #f3a1b3, #f8c3d0);
-      color: white;
-      padding: 14px 24px;
-      border-radius: 30px;
-      font-size: 16px;
-      font-weight: 700;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 6px 20px rgba(243,161,179,0.4);
-      cursor: pointer;
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
-      position: fixed;
-    }
 
-    .chat-btn:hover {
-      transform: translateY(-4px) scale(1.05);
-      box-shadow: 0 12px 32px rgba(243,161,179,0.6);
-    }
+.whatsapp-btn, .chat-btn {
+  position: fixed;
+  right: 25px;
+  background: #7c4dff;
+  color: white;
+  cursor: pointer;
+  box-shadow: 0 0 15px rgba(160,100,255,0.6);
+}
 
-    /* ================= ANIMATIONS ================= */
-    @keyframes pulse {
-      0% { box-shadow: 0 0 0 0 rgba(255,111,145,0.6); }
-      70% { box-shadow: 0 0 0 18px rgba(255,111,145,0); }
-      100% { box-shadow: 0 0 0 0 rgba(255,111,145,0); }
-    }
+.whatsapp-btn {
+  bottom: 95px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+}
 
-    /* ================= RESPONSIVE ================= */
-    @media (max-width: 900px) {
-      .section {
-        grid-template-columns: 1fr;
-        gap: 35px;
-      }
+.chat-btn {
+  bottom: 25px;
+  padding: 14px 24px;
+  border-radius: 30px;
+  font-weight: bold;
+}
 
-      .section.reverse {
-        direction: ltr;
-      }
 
-      .text-box h2 {
-        font-size: 28px;
-      }
 
-      .text-box p {
-        font-size: 16px;
-      }
-
-      .nav-links {
-        display: none;
-      }
-    }
-    .chat-modal {
+.chat-modal {
   position: fixed;
   inset: 0;
   background: rgba(0,0,0,0.45);
@@ -305,309 +208,306 @@
 .chat-window {
   width: 380px;
   height: 500px;
-  background: white;
+  background: #1a102a;
   border-radius: 18px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.2);
 }
 
 .chat-header {
-  background: #f3a1b3;
+  background: #7c4dff;
   color: white;
   padding: 14px;
-  font-weight: bold;
   display: flex;
   justify-content: space-between;
-  cursor: pointer;
 }
 
 .chat-messages {
   flex: 1;
   padding: 12px;
   overflow-y: auto;
-  font-size: 14px;
 }
 
 .chat-input {
   display: flex;
-  border-top: 1px solid #eee;
 }
 
 .chat-input input {
   flex: 1;
   padding: 10px;
   border: none;
-  outline: none;
 }
 
 .chat-input button {
-  background: #f3a1b3;
-  border: none;
+  background: #7c4dff;
   color: white;
+  border: none;
   padding: 10px 16px;
-  cursor: pointer;
 }
 
-.msg-user {
-  text-align: right;
-  margin: 6px 0;
+@media (max-width: 900px) {
+  .section {
+    grid-template-columns: 1fr;
+  }
+  .nav-links {
+    display: none;
+  }
 }
-
-.msg-ai {
-  text-align: left;
-  margin: 6px 0;
-  color: #b03b5b;
-}
-
-  </style>
+</style>
 </head>
+
 <body>
 
-  <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="logo">🌸 Wellness</div>
+<canvas id="bgCanvas"></canvas>
 
-    <div class="nav-links">
-      <a href="#">Home</a>
-      <a href="#">Courses</a>
-      <a href="#">Services</a>
-      <a href="#">Shop</a>
-      <a href="#">Gallery</a>
-      <a href="#">About Us</a>
-    </div>
-
-    <div class="nav-icons">
-      <span>🔍</span>
-      <span>👤</span>
-      <span>🛒</span>
-    </div>
-  </nav>
-
-  <!-- SECTION 1 -->
-  <section class="section">
-    <div class="img-box">
-        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=1220&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Teen fitness yoga">
-    </div>
-    </div>
-    <div class="text-box">
-      <h2>01. Physical Health</h2>
-      <p>Build strength, energy, and vitality with movement, nutrition, and daily habits.</p>
-      <div class="features">
-        <div class="feature-pill">🏃 Fitness</div>
-        <div class="feature-pill">🥗 Nutrition</div>
-        <div class="feature-pill">💤 Sleep</div>
-        <div class="feature-pill">🧘 Flexibility</div>
-      </div>
-      <a href="quiz.html?topic=physical" class="cta-btn">
-  Explore Programs
-</a>
-
-    </div>
-  </section>
-
-  <!-- SECTION 2 -->
-  <section class="section reverse">
-    <div class="img-box">
-      <img src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?auto=format&fit=crop&w=1200&q=80">
-    </div>
-    <div class="text-box">
-      <h2>02. Mental Health</h2>
-      <p>Calm your mind, improve focus, and manage stress with mindfulness practices.</p>
-      <div class="features">
-        <div class="feature-pill">🧠 Focus</div>
-        <div class="feature-pill">🌿 Mindfulness</div>
-        <div class="feature-pill">😌 Stress Relief</div>
-        <div class="feature-pill">💭 Clarity</div>
-      </div>
-      <a href="quiz.html?topic=mental" class="cta-btn">
-  View Sessions
-</a>
-
-    </div>
-  </section>
-
-  <!-- SECTION 3 -->
-  <section class="section">
-    <div class="img-box">
-      <img src="https://media.licdn.com/dms/image/v2/C4E12AQEZCS8xVBWj6w/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1632135333427?e=2147483647&v=beta&t=EVb07Zo6v3GTRId2oMhT6q7kPohFAP42Xr3CT_hiDBo">
-    </div>
-    <div class="text-box">
-      <h2>03. Emotional Health</h2>
-      <p>Understand emotions, build resilience, and strengthen inner peace.</p>
-      <div class="features">
-        <div class="feature-pill">❤️ Self-care</div>
-        <div class="feature-pill">🤝 Support</div>
-        <div class="feature-pill">🧘 Healing</div>
-        <div class="feature-pill">🌈 Balance</div>
-      </div>
-      <a href="quiz.html?topic=emotional" class="cta-btn">
-  Start Healing
-</a>
-
-    </div>
-  </section>
-
-  <!-- SECTION 4 -->
-  <section class="section reverse">
-    <div class="img-box">
-      <img src="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?auto=format&fit=crop&w=1200&q=80">
-    </div>
-    <div class="text-box">
-      <h2>04. Social Wellness</h2>
-      <p>Build meaningful relationships and healthy social connections.</p>
-      <div class="features">
-        <div class="feature-pill">👥 Community</div>
-        <div class="feature-pill">💬 Communication</div>
-        <div class="feature-pill">🤗 Support</div>
-        <div class="feature-pill">🌍 Connection</div>
-      </div>
-      <a href="quiz.html?topic=social" class="cta-btn">
-  Join Community
-</a>
-
-    </div>
-  </section>
-
-  <!-- SECTION 5 -->
-  <section class="section">
-    <div class="img-box">
-      <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=80">
-    </div>
-    <div class="text-box">
-      <h2>05. Spiritual Wellness</h2>
-      <p>Find inner peace, purpose, and deeper self-awareness.</p>
-      <div class="features">
-        <div class="feature-pill">🕯 Meditation</div>
-        <div class="feature-pill">🌌 Awareness</div>
-        <div class="feature-pill">🙏 Gratitude</div>
-        <div class="feature-pill">🌸 Peace</div>
-      </div>
-      <a href="quiz.html?topic=spiritual" class="cta-btn">
-  Begin Journey
-</a>
-
-    </div>
-  </section>
-
-  <!-- SECTION 6 -->
-  <section class="section reverse">
-    <div class="img-box">
-      <img src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?auto=format&fit=crop&w=1200&q=80">
-    </div>
-    <div class="text-box">
-      <h2>06. Lifestyle Balance</h2>
-      <p>Create routines that support long-term happiness and productivity.</p>
-      <div class="features">
-        <div class="feature-pill">⏰ Routine</div>
-        <div class="feature-pill">🎯 Goals</div>
-        <div class="feature-pill">⚖ Balance</div>
-        <div class="feature-pill">🌟 Growth</div>
-      </div>
-      <a href="quiz.html?topic=lifestyle" class="cta-btn">
-  Build Lifestyle
-</a>
-
-    </div>
-  </section>
-
-  
-<section class="section reverse">
-  <div class="img-box">
-    <img src="https://images.unsplash.com/photo-1517842645767-c639042777db?auto=format&fit=crop&w=1200&q=80">
+<nav class="navbar">
+  <div class="logo">🌸 IKIGAI FOR TEENS</div>
+  <div class="nav-links">
+    <a href="#">Home</a>
+    <a href="#">Programs</a>
+    <a href="#">Wellness</a>
+    <a href="#">Journal</a>
+    <a href="#">Community</a>
+    <a href="#">About</a>
   </div>
+  <div class="nav-icons">
+    <span>🔍</span>
+    <span>👤</span>
+    <span>🛒</span>
+  </div>
+</nav>
 
+
+<section class="section">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b">
+  </div>
   <div class="text-box">
-    <h2>07. Mood Tracker & Journal</h2>
-
-    <p>
-      Monitor your emotions, track daily mood patterns, and express
-      thoughts through guided journaling. Build emotional awareness
-      and develop healthier mental habits over time.
-    </p>
-
+    <h2>01. Physical Health</h2>
+    <p>Build strength, energy, and confidence with daily movement and smart habits.</p>
     <div class="features">
-      <div class="feature-pill">😊 Mood Logging</div>
-      <div class="feature-pill">📖 Daily Journal</div>
-      <div class="feature-pill">📊 Mood Insights</div>
-      <div class="feature-pill">🧠 Self-Reflection</div>
+      <div class="feature-pill">🏃 Fitness</div>
+      <div class="feature-pill">🥗 Nutrition</div>
+      <div class="feature-pill">😴 Sleep</div>
+      <div class="feature-pill">💧 Hydration</div>
     </div>
-
-    <a href="mood.html" class="cta-btn">
-  Open Mood Tracker
-</a>
+    <a href="quiz.html?topic=physical" class="cta-btn">Explore Fitness</a>
 
   </div>
 </section>
 
 
-  <!-- FLOATING BUTTONS -->
-  <div class="whatsapp-btn">💬</div>
-  <div class="chat-btn">✨ Chat with AI</div>
-   
-  <!-- CHAT MODAL -->
-<div id="chatModal" class="chat-modal">
-  <div class="chat-window">
-    <div class="chat-header">
-      AI Wellness Assistant
-      <span id="closeChat">✖</span>
-    </div>
-
-    <div id="chatMessages" class="chat-messages"></div>
-
-    <div class="chat-input">
-      <input id="userInput" type="text" placeholder="Ask something..." />
-      <button id="sendBtn">Send</button>
-    </div>
+<section class="section reverse">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1527137342181-19aab11a8ee8">
   </div>
-</div>
+  <div class="text-box">
+    <h2>02. Mental Health</h2>
+    <p>Strengthen your mind, manage stress, and build focus for school and life.</p>
+    <div class="features">
+      <div class="feature-pill">🧠 Focus Training</div>
+      <div class="feature-pill">🌿 Stress Relief</div>
+      <div class="feature-pill">📝 Thought Journals</div>
+      <div class="feature-pill">🛡 Confidence Boost</div>
+    </div>
+    <a href="quiz.html?topic=mental" class="cta-btn">Calm Your Mind</a>
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac">
+  </div>
+  <div class="text-box">
+    <h2>03. Emotional Health</h2>
+    <p>Understand your emotions, express yourself safely, and build self-love.</p>
+    <div class="features">
+      <div class="feature-pill">💖 Self-Esteem</div>
+      <div class="feature-pill">😌 Emotional Control</div>
+      <div class="feature-pill">🧩 Coping Skills</div>
+      <div class="feature-pill">🤝 Support Circles</div>
+    </div>
+   <a href="quiz.html?topic=emotional" class="cta-btn">Explore Emotions</a>
+
+  </div>
+</section>
+
+
+<section class="section reverse">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac">
+  </div>
+  <div class="text-box">
+    <h2>04. Social Wellness</h2>
+    <p>Build healthy friendships, communication skills, and strong connections.</p>
+    <div class="features">
+      <div class="feature-pill">🗣 Communication</div>
+      <div class="feature-pill">🤝 Friendships</div>
+      <div class="feature-pill">🌍 Community</div>
+      <div class="feature-pill">💬 Peer Support</div>
+    </div>
+    <a href="quiz.html?topic=social" class="cta-btn">Join Community</a>
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
+  </div>
+  <div class="text-box">
+    <h2>05. Spiritual Wellness</h2>
+    <p>Discover purpose, inner peace, and mindfulness in everyday moments.</p>
+    <div class="features">
+      <div class="feature-pill">🧘 Meditation</div>
+      <div class="feature-pill">🌄 Mindfulness</div>
+      <div class="feature-pill">📿 Gratitude</div>
+      <div class="feature-pill">✨ Purpose</div>
+    </div>
+    <a href="quiz.html?topic=spiritual" class="cta-btn">Find Inner Peace</a>
+
+  </div>
+</section>
+
+
+<section class="section reverse">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1492724441997-5dc865305da7">
+  </div>
+  <div class="text-box">
+    <h2>06. Lifestyle Balance</h2>
+    <p>Balance school, screen time, rest, hobbies, and personal growth.</p>
+    <div class="features">
+      <div class="feature-pill">⏰ Time Management</div>
+      <div class="feature-pill">📱 Digital Detox</div>
+      <div class="feature-pill">🎨 Hobbies</div>
+      <div class="feature-pill">📚 Productivity</div>
+    </div>
+    <a href="quiz.html?topic=lifestyle" class="cta-btn">Balance Your Life</a>
+
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2">
+  </div>
+  <div class="text-box">
+    <h2>07. Mood Tracker</h2>
+    <p>Track your emotions daily and understand your mental patterns better.</p>
+    <div class="features">
+      <div class="feature-pill">😊 Daily Check-ins</div>
+      <div class="feature-pill">📊 Mood Charts</div>
+      <div class="feature-pill">🔔 Reminders</div>
+      <div class="feature-pill">💬 AI Insights</div>
+    </div>
+    <a href="mood.html" class="cta-btn">Track My Mood</a>
+
+  </div>
+</section>
+
+
+<section class="section reverse">
+  <div class="img-box">
+    <img src="https://images.unsplash.com/photo-1519681393784-d120267933ba">
+  </div>
+  <div class="text-box">
+    <h2>08. Personal Journal</h2>
+    <p>Write your thoughts, dreams, and reflections in a safe digital space.</p>
+    <div class="features">
+      <div class="feature-pill">📝 Daily Entries</div>
+      <div class="feature-pill">🔒 Private & Secure</div>
+      <div class="feature-pill">🎯 Goal Setting</div>
+      <div class="feature-pill">🌈 Gratitude Logs</div>
+    </div>
+    <a href="journal.html" class="cta-btn">Start Journaling</a>
+
+  </div>
+</section>
+
+<div class="whatsapp-btn">💬</div>
+<div class="chat-btn">✨ Chat with AI</div>
+
+
 <script>
-const chatBtn = document.querySelector(".chat-btn");
-const modal = document.getElementById("chatModal");
-const closeChat = document.getElementById("closeChat");
-const sendBtn = document.getElementById("sendBtn");
-const userInput = document.getElementById("userInput");
-const chatMessages = document.getElementById("chatMessages");
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
 
-chatBtn.onclick = () => modal.style.display = "flex";
-closeChat.onclick = () => modal.style.display = "none";
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-function addMessage(text, className) {
-  const msg = document.createElement("div");
-  msg.className = className;
-  msg.innerText = text;
-  chatMessages.appendChild(msg);
-  chatMessages.scrollTop = chatMessages.scrollHeight;
-}
+let particles = [];
 
-async function sendMessage() {
-  const text = userInput.value.trim();
-  if (!text) return;
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5);
+    this.vy = (Math.random() - 0.5);
+  }
 
-  addMessage(text, "msg-user");
-  userInput.value = "";
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
 
-  try {
-    const response = await fetch("http://localhost:3000/chat", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: text })
-    });
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
 
-    const data = await response.json();
-    addMessage(data.reply, "msg-ai");
-  } catch {
-    addMessage("Error connecting to AI.", "msg-ai");
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#c084fc";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#c084fc";
+    ctx.fill();
   }
 }
 
-sendBtn.onclick = sendMessage;
-userInput.addEventListener("keypress", e => {
-  if (e.key === "Enter") sendMessage();
+for (let i = 0; i < 120; i++) {
+  particles.push(new Particle());
+}
+
+function connectParticles() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i; j < particles.length; j++) {
+      let dx = particles[i].x - particles[j].x;
+      let dy = particles[i].y - particles[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(200,150,255,0.2)";
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.move();
+    p.draw();
+  });
+  connectParticles();
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 });
 </script>
-
 
 </body>
 </html>

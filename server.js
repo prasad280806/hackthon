@@ -14,7 +14,7 @@ const openai = new OpenAI({
 app.post("/chat", (req, res) => {
   let msg = req.body.message.toLowerCase();
 
-  // normalize common chat shortcuts
+
   msg = msg.replace(/\bu\b/g, "you");
 
   let reply = "";
