@@ -6,21 +6,38 @@
 <style>
   * { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
 
-  body {
-    background: linear-gradient(135deg, #ffe4ef, #ffd6e8);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
+body {
+  background: radial-gradient(circle at center, #1b0f2a, #06040d);
+  color: #e6dfff;
+  overflow: hidden;
+}
 
-  .app {
-    width: 420px;
-    background: #fff0f6;
-    border-radius: 22px;
-    padding: 16px;
-    box-shadow: 0 12px 30px rgba(0,0,0,0.15);
-  }
+
+#neural-bg {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+
+ .app {
+  width: 420px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(14px);
+  border-radius: 22px;
+  padding: 16px;
+  box-shadow: 0 0 40px rgba(170,120,255,0.15);
+  border: 1px solid rgba(200,150,255,0.2);
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 
   h2 {
     text-align: center;
@@ -136,6 +153,7 @@
 </style>
 </head>
 <body>
+<div id="neural-bg"></div>
 
 <div class="app">
   <h2>📓 My Journal</h2>
@@ -173,13 +191,13 @@ const typedBox = document.getElementById("typedText");
 const entriesDiv = document.getElementById("entries");
 
 let entries = JSON.parse(localStorage.getItem("voiceJournal")) || [];
+ 
 
-/* ----------- Typed Preview ----------- */
 journalInput.addEventListener("input", () => {
   typedBox.innerText = journalInput.value;
 });
 
-/* ----------- Speech Recognition ----------- */
+
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
 if (!SpeechRecognition) {
@@ -219,7 +237,7 @@ if (!SpeechRecognition) {
   };
 }
 
-/* ----------- Journal Logic ----------- */
+
 function saveEntry() {
   const text = journalInput.value.trim();
   if (!text) return;
@@ -253,6 +271,81 @@ function renderEntries() {
 }
 
 renderEntries();
+</script>
+<script>
+
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+class Particle {
+  constructor() {
+    this.x = Math.random() * canvas.width;
+    this.y = Math.random() * canvas.height;
+    this.vx = (Math.random() - 0.5);
+    this.vy = (Math.random() - 0.5);
+  }
+
+  move() {
+    this.x += this.vx;
+    this.y += this.vy;
+
+    if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+    if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+  }
+
+  draw() {
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, 2, 0, Math.PI * 2);
+    ctx.fillStyle = "#c084fc";
+    ctx.shadowBlur = 15;
+    ctx.shadowColor = "#c084fc";
+    ctx.fill();
+  }
+}
+
+for (let i = 0; i < 120; i++) {
+  particles.push(new Particle());
+}
+
+function connectParticles() {
+  for (let i = 0; i < particles.length; i++) {
+    for (let j = i; j < particles.length; j++) {
+      let dx = particles[i].x - particles[j].x;
+      let dy = particles[i].y - particles[j].y;
+      let dist = Math.sqrt(dx * dx + dy * dy);
+
+      if (dist < 120) {
+        ctx.beginPath();
+        ctx.strokeStyle = "rgba(200,150,255,0.2)";
+        ctx.moveTo(particles[i].x, particles[i].y);
+        ctx.lineTo(particles[j].x, particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  particles.forEach(p => {
+    p.move();
+    p.draw();
+  });
+  connectParticles();
+  requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize", () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+});
 </script>
 
 </body>
