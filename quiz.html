@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wellness Assessment</title>
+
+<style>
+body{
+margin:0;
+font-family:"Segoe UI",sans-serif;
+height:100vh;
+background:linear-gradient(135deg,#dff1f1,#f7e9f1);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.layout{
+width:95%;
+max-width:1100px;
+display:grid;
+grid-template-columns:1.1fr 1fr;
+background:rgba(255,255,255,0.9);
+border-radius:24px;
+overflow:hidden;
+box-shadow:0 20px 60px rgba(0,0,0,0.12);
+}
+
+.quiz-panel{padding:50px;}
+
+.header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:20px;
+}
+
+.counter{font-size:14px;color:#666;}
+
+#question{
+font-size:22px;
+margin:30px 0;
+}
+
+.scale{
+display:flex;
+justify-content:space-between;
+margin:25px 0;
+}
+
+.circle{
+width:52px;
+height:52px;
+border-radius:50%;
+border:3px solid #9b8bd6;
+cursor:pointer;
+transition:.25s;
+}
+
+.circle:hover{transform:scale(1.15);}
+
+.circle.selected{
+background:linear-gradient(135deg,#9b8bd6,#c8b8ff);
+box-shadow:0 0 15px rgba(155,139,214,.6);
+}
+
+.labels{
+display:flex;
+justify-content:space-between;
+font-size:14px;
+color:#666;
+}
+
+.progress{
+height:8px;
+background:#eee;
+border-radius:10px;
+margin-top:25px;
+overflow:hidden;
+}
+
+.bar{
+height:100%;
+width:0%;
+background:linear-gradient(90deg,#9b8bd6,#c8b8ff);
+transition:width .4s ease;
+}
+
+.art-panel{
+background:linear-gradient(160deg,#e8f6f5,#f6e8f0);
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.art-panel img{
+width:65%;
+opacity:.9;
+}
+
+@media(max-width:900px){
+.layout{grid-template-columns:1fr;}
+.art-panel{display:none;}
+}
+</style>
+</head>
+
+<body>
+
+<div class="layout">
+
+<div class="quiz-panel">
+
+<div class="header">
+<h2 id="title"></h2>
+<div class="counter" id="counter"></div>
+</div>
+
+<div id="question"></div>
+
+<div class="scale" id="scale"></div>
+
+<div class="labels">
+<span>Strongly Disagree</span>
+<span>Neutral</span>
+<span>Strongly Agree</span>
+</div>
+
+<div class="progress">
+<div class="bar" id="bar"></div>
+</div>
+
+</div>
+
+<div class="art-panel">
+<img src="https://cdn-icons-png.flaticon.com/512/2922/2922561.png">
+</div>
+
+</div>
+
+<script>
+const quiz={
+
+physical:{
+title:"Physical Wellness Assessment",
+questions:[
+"I exercise regularly.",
+"I maintain a healthy diet.",
+"I get enough sleep daily."
+]},
+
+mental:{
+title:"Mental Wellness Assessment",
+questions:[
+"I manage stress effectively.",
+"I feel emotionally balanced.",
+"I take time to relax."
+]},
+
+emotional:{
+title:"Emotional Wellness Assessment",
+questions:[
+"I express emotions clearly.",
+"I recover from setbacks quickly.",
+"I practice self-care."
+]},
+
+social:{
+title:"Social Wellness Assessment",
+questions:[
+"I maintain strong relationships.",
+"I communicate openly.",
+"I feel socially supported."
+]},
+
+spiritual:{
+title:"Spiritual Wellness Assessment",
+questions:[
+"I feel connected to purpose.",
+"I practice reflection.",
+"I feel inner peace."
+]},
+
+lifestyle:{
+title:"Lifestyle Balance Assessment",
+questions:[
+"I manage my time well.",
+"I balance work and rest.",
+"I pursue personal growth."
+]}
+
+};
+
+const params=new URLSearchParams(window.location.search);
+const topic=params.get("topic")||"physical";
+const data=quiz[topic];
+
+document.getElementById("title").innerText=data.title;
+
+let index=0;
+let score=0;
+
+function updateCounter(){
+document.getElementById("counter").innerText=
+(index+1)+" / "+data.questions.length;
+}
+
+function updateProgress(){
+const percent=(index/data.questions.length)*100;
+document.getElementById("bar").style.width=percent+"%";
+}
+
+function showQuestion(){
+updateCounter();
+document.getElementById("question").innerText=data.questions[index];
+
+const scale=document.getElementById("scale");
+scale.innerHTML="";
+
+for(let i=1;i<=5;i++){
+const c=document.createElement("div");
+c.className="circle";
+c.onclick=()=>selectAnswer(c,i);
+scale.appendChild(c);
+}
+
+updateProgress();
+}
+
+function selectAnswer(el,val){
+document.querySelectorAll(".circle")
+.forEach(c=>c.classList.remove("selected"));
+el.classList.add("selected");
+
+setTimeout(()=>answer(val),200);
+}
+
+function answer(val){
+score+=val;
+index++;
+
+if(index<data.questions.length){
+showQuestion();
+}else{
+finishQuiz();
+}
+}
+
+function finishQuiz(){
+
+const maxScore=data.questions.length*5;
+const percent=(score/maxScore)*100;
+
+localStorage.setItem(topic,percent);
+
+window.location.href="dashboard.html";
+}
+
+showQuestion();
+</script>
+
+</body>
+</html>

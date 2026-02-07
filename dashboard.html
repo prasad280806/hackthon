@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Wellness Dashboard</title>
+
+<style>
+body{
+margin:0;
+font-family:"Segoe UI",sans-serif;
+background:linear-gradient(135deg,#dff1f1,#f7e9f1);
+display:flex;
+justify-content:center;
+padding:40px;
+}
+
+.container{
+background:white;
+padding:40px;
+border-radius:20px;
+width:700px;
+box-shadow:0 15px 40px rgba(0,0,0,0.1);
+}
+
+h1{text-align:center;}
+
+.section{margin:20px 0;}
+
+.bar{
+height:14px;
+background:#eee;
+border-radius:10px;
+overflow:hidden;
+}
+
+.fill{
+height:100%;
+background:linear-gradient(90deg,#7ad3b2,#9b8bd6);
+transition:width 1s ease;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Your Global Wellness Dashboard</h1>
+<button onclick="resetData()" style="
+margin-bottom:20px;
+padding:10px 16px;
+border:none;
+border-radius:8px;
+background:#ff6b6b;
+color:white;
+cursor:pointer;
+">
+Reset All Data
+</button>
+
+
+<div id="stats"></div>
+
+</div>
+
+<script>
+const topics=[
+"physical",
+"mental",
+"emotional",
+"social",
+"spiritual",
+"lifestyle"
+];
+
+const names={
+physical:"Physical",
+mental:"Mental",
+emotional:"Emotional",
+social:"Social",
+spiritual:"Spiritual",
+lifestyle:"Lifestyle"
+};
+
+const stats=document.getElementById("stats");
+
+/* Render dashboard bars */
+
+topics.forEach(t=>{
+
+const value=localStorage.getItem(t) || 0;
+
+stats.innerHTML+=`
+<div class="section">
+<h3>${names[t]}</h3>
+<div class="bar">
+<div class="fill" style="width:${value}%"></div>
+</div>
+</div>
+`;
+
+});
+
+/* Reset button function */
+
+function resetData(){
+
+localStorage.clear();
+
+alert("All data reset successfully!");
+
+location.reload();
+
+}
+</script>
+
+
+</body>
+</html>
