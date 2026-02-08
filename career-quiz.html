@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Career Quiz</title>
+
+<style>
+* { box-sizing: border-box; font-family: "Segoe UI", sans-serif; }
+
+body {
+  margin: 0;
+  background: #06040d;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  overflow: hidden;
+  color: white;
+}
+
+/* BACKGROUND CANVAS */
+#bgCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+}
+
+/* QUIZ UI */
+.quiz-container {
+  position: relative;
+  z-index: 2;
+  background: rgba(20,10,40,0.85);
+  backdrop-filter: blur(12px);
+  padding: 25px;
+  border-radius: 18px;
+  width: 380px;
+  box-shadow: 0 0 50px rgba(160,100,255,0.4);
+  border: 1px solid rgba(200,150,255,0.3);
+  text-align: center;
+}
+
+h2 {
+  color: #c084fc;
+  margin-bottom: 15px;
+}
+
+.option {
+  background: rgba(255,255,255,0.1);
+  border: 1px solid #7c4dff;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option:hover {
+  background: #7c4dff;
+}
+
+.progress {
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #ccc;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px 18px;
+  background: #7c4dff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.result { display: none; }
+
+.career-card {
+  background: rgba(255,255,255,0.1);
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+  border: 1px solid #7c4dff;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bgCanvas"></canvas>
+
+<div class="quiz-container">
+  <div id="quizBox">
+    <div class="progress" id="progressText"></div>
+    <h2 id="questionText"></h2>
+    <div id="optionsBox"></div>
+  </div>
+
+  <div id="resultBox" class="result">
+    <h2>Your Career Matches 🌟</h2>
+    <div id="results"></div>
+    <button onclick="restartQuiz()">Restart Quiz</button>
+  </div>
+</div>
+
+<script>
+/* QUIZ LOGIC */
+
+const questions = [
+
+{question:"What do you enjoy most in free time?",
+options:[
+{text:"Drawing / writing / creating",domain:"Arts"},
+{text:"Solving puzzles or math",domain:"Science"},
+{text:"Helping friends",domain:"Healthcare"},
+{text:"Playing games / tech stuff",domain:"Technology"},
+{text:"Leading group activities",domain:"Business"}]},
+
+{question:"Which sounds most exciting?",
+options:[
+{text:"Designing an app or game",domain:"Technology"},
+{text:"Teaching someone",domain:"Education"},
+{text:"Helping people feel better",domain:"Healthcare"},
+{text:"Starting a business",domain:"Business"},
+{text:"Making art or videos",domain:"Arts"}]},
+
+{question:"Your favorite school subject?",
+options:[
+{text:"Art or Literature",domain:"Arts"},
+{text:"Math or Physics",domain:"Science"},
+{text:"Biology",domain:"Healthcare"},
+{text:"Computer Science",domain:"Technology"},
+{text:"Economics",domain:"Business"}]},
+
+{question:"What motivates you most?",
+options:[
+{text:"Creativity",domain:"Arts"},
+{text:"Solving big problems",domain:"Science"},
+{text:"Helping people",domain:"Healthcare"},
+{text:"Innovation",domain:"Technology"},
+{text:"Success and leadership",domain:"Business"}]},
+
+{question:"In group projects you usually:",
+options:[
+{text:"Bring creative ideas",domain:"Arts"},
+{text:"Handle research",domain:"Science"},
+{text:"Support teammates",domain:"Healthcare"},
+{text:"Fix technical issues",domain:"Technology"},
+{text:"Lead the team",domain:"Business"}]},
+
+{question:"What type of work environment do you prefer?",
+options:[
+{text:"Creative studio",domain:"Arts"},
+{text:"Laboratory",domain:"Science"},
+{text:"Hospital/clinic",domain:"Healthcare"},
+{text:"Tech office",domain:"Technology"},
+{text:"Corporate office",domain:"Business"}]},
+
+{question:"Which activity sounds fun?",
+options:[
+{text:"Designing posters",domain:"Arts"},
+{text:"Running experiments",domain:"Science"},
+{text:"Volunteering",domain:"Healthcare"},
+{text:"Building apps",domain:"Technology"},
+{text:"Pitching ideas",domain:"Business"}]},
+
+{question:"People say you are good at:",
+options:[
+{text:"Creativity",domain:"Arts"},
+{text:"Logical thinking",domain:"Science"},
+{text:"Empathy",domain:"Healthcare"},
+{text:"Problem solving",domain:"Technology"},
+{text:"Leadership",domain:"Business"}]},
+
+{question:"If you could learn anything instantly:",
+options:[
+{text:"Painting or music",domain:"Arts"},
+{text:"Advanced science",domain:"Science"},
+{text:"Medical skills",domain:"Healthcare"},
+{text:"Coding",domain:"Technology"},
+{text:"Entrepreneurship",domain:"Business"}]},
+
+{question:"Your dream future looks like:",
+options:[
+{text:"Creative freedom",domain:"Arts"},
+{text:"Scientific discoveries",domain:"Science"},
+{text:"Helping society",domain:"Healthcare"},
+{text:"Building technology",domain:"Technology"},
+{text:"Running a company",domain:"Business"}]}
+
+];
+
+
+let currentQuestion=0;
+let scores={};
+
+const questionText=document.getElementById("questionText");
+const optionsBox=document.getElementById("optionsBox");
+const progressText=document.getElementById("progressText");
+const quizBox=document.getElementById("quizBox");
+const resultBox=document.getElementById("resultBox");
+const resultsDiv=document.getElementById("results");
+
+function loadQuestion(){
+  const q=questions[currentQuestion];
+  questionText.textContent=q.question;
+  progressText.textContent=`Question ${currentQuestion+1} of ${questions.length}`;
+  optionsBox.innerHTML="";
+
+  q.options.forEach(option=>{
+    const div=document.createElement("div");
+    div.className="option";
+    div.textContent=option.text;
+    div.onclick=()=>selectOption(option.domain);
+    optionsBox.appendChild(div);
+  });
+}
+
+function selectOption(domain){
+  scores[domain]=(scores[domain]||0)+1;
+  currentQuestion++;
+
+  if(currentQuestion<questions.length) loadQuestion();
+  else showResults();
+}
+
+function showResults(){
+  quizBox.style.display="none";
+  resultBox.style.display="block";
+
+  const sorted=Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  resultsDiv.innerHTML="";
+
+  sorted.slice(0,3).forEach(([domain])=>{
+    const card=document.createElement("div");
+    card.className="career-card";
+    card.textContent=domain;
+    resultsDiv.appendChild(card);
+  });
+}
+
+function restartQuiz(){
+  currentQuestion=0;
+  scores={};
+  resultBox.style.display="none";
+  quizBox.style.display="block";
+  loadQuestion();
+}
+
+loadQuestion();
+
+/* ANIMATED BACKGROUND */
+
+const canvas=document.getElementById("bgCanvas");
+const ctx=canvas.getContext("2d");
+
+function resize(){
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+}
+resize();
+window.addEventListener("resize",resize);
+
+let particles=[];
+
+for(let i=0;i<150;i++){
+  particles.push({
+    x:Math.random()*canvas.width,
+    y:Math.random()*canvas.height,
+    vx:(Math.random()-0.5)*1.2,
+    vy:(Math.random()-0.5)*1.2
+  });
+}
+
+function animate(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  for(let i=0;i<particles.length;i++){
+    let p=particles[i];
+    p.x+=p.vx;
+    p.y+=p.vy;
+
+    if(p.x<0||p.x>canvas.width)p.vx*=-1;
+    if(p.y<0||p.y>canvas.height)p.vy*=-1;
+
+    ctx.beginPath();
+    ctx.arc(p.x,p.y,3,0,Math.PI*2);
+    ctx.fillStyle="#bb86fc";
+    ctx.shadowBlur=20;
+    ctx.shadowColor="#bb86fc";
+    ctx.fill();
+
+    for(let j=i;j<particles.length;j++){
+      let dx=p.x-particles[j].x;
+      let dy=p.y-particles[j].y;
+      let dist=Math.sqrt(dx*dx+dy*dy);
+
+      if(dist<130){
+        ctx.beginPath();
+        ctx.strokeStyle="rgba(187,134,252,0.25)";
+        ctx.moveTo(p.x,p.y);
+        ctx.lineTo(particles[j].x,particles[j].y);
+        ctx.stroke();
+      }
+    }
+  }
+
+  requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>

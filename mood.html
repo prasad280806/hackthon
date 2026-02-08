@@ -1,65 +1,300 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ikigai Teen Wellness Tracker</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <style>
-    body { font-family: "Segoe UI", sans-serif; background: #ffe6f0; display:flex; flex-direction:column; align-items:center; padding:20px;}
-    h1 { color:#ff4081; margin-bottom:20px;}
-    .mood-selection { display:flex; flex-direction:column; align-items:center; margin-bottom:20px;}
-    #datePicker { padding:8px; font-size:16px; margin-bottom:10px;}
-    .mood-buttons button { background:#fff; border:2px solid #ff4081; border-radius:8px; padding:10px 20px; margin:5px; cursor:pointer; font-size:18px; transition:0.3s;}
-    .mood-buttons button:hover { background:#ffb6c1; color:#fff;}
-    #todayMood { margin-top:10px; font-size:20px; font-weight:bold;}
-    #calendar { display:grid; grid-template-columns: repeat(7,40px); gap:5px; margin-top:20px;}
-    .day { width:40px; height:40px; display:flex; justify-content:center; align-items:center; border-radius:6px; cursor:pointer; background:#fff0f5; border:1px solid #ff4081; font-weight:bold; position:relative;}
-    .day:hover { transform:scale(1.1);}
-    .journal-dot { width:6px; height:6px; border-radius:50%; background:#ff4081; position:absolute; bottom:4px; right:4px;}
-    #chartContainer { margin-top:30px; max-width:600px; width:100%;}
-    textarea { margin-top:10px; width:300px; padding:8px; font-size:16px; border-radius:6px; border:1px solid #ccc;}
-    button.saveJournal { margin-top:5px; padding:8px 15px; background:#ff4081; color:white; border:none; border-radius:6px; cursor:pointer;}
-    button.saveJournal:hover { background:#ff1c70;}
-    .legend { display:flex; justify-content:center; margin-top:10px; gap:10px;}
-    .legend div { display:flex; align-items:center; gap:5px; font-size:14px;}
-    .color-box { width:20px; height:20px; border-radius:4px; border:1px solid #333;}
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ikigai Teen Wellness Tracker</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:"Segoe UI",sans-serif;
+}
+
+/* ===== SAME BACKGROUND AS MAIN PAGE ===== */
+
+body{
+  background:radial-gradient(circle at center,#1b0f2a,#06040d);
+  color:#e6dfff;
+  overflow-x:hidden;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding:20px;
+}
+
+/* animated canvas */
+#bgCanvas{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  z-index:-1;
+}
+
+/* ===== YOUR ORIGINAL UI (unchanged styling, just themed) ===== */
+
+h1{
+  color:#d9b3ff;
+  margin-bottom:20px;
+}
+
+.mood-selection{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  margin-bottom:20px;
+  background:rgba(255,255,255,0.05);
+  backdrop-filter:blur(14px);
+  padding:25px;
+  border-radius:18px;
+  border:1px solid rgba(200,150,255,0.2);
+}
+
+#datePicker{
+  padding:8px;
+  font-size:16px;
+  margin-bottom:10px;
+  border-radius:6px;
+}
+
+.mood-buttons button{
+  background:rgba(255,255,255,0.1);
+  border:2px solid #c084fc;
+  border-radius:8px;
+  padding:10px 20px;
+  margin:5px;
+  cursor:pointer;
+  font-size:18px;
+  color:white;
+  transition:0.3s;
+}
+
+.mood-buttons button:hover{
+  background:#c084fc;
+}
+
+#todayMood{
+  margin-top:10px;
+  font-size:20px;
+  font-weight:bold;
+}
+
+textarea{
+  margin-top:10px;
+  width:300px;
+  padding:8px;
+  font-size:16px;
+  border-radius:6px;
+}
+
+button.saveJournal{
+  margin-top:5px;
+  padding:8px 15px;
+  background:#7c4dff;
+  color:white;
+  border:none;
+  border-radius:6px;
+  cursor:pointer;
+}
+
+button.saveJournal:hover{
+  background:#a970ff;
+}
+
+h2{
+  margin-top:20px;
+}
+
+#calendar{
+  display:grid;
+  grid-template-columns:repeat(7,40px);
+  gap:5px;
+  margin-top:20px;
+}
+
+.day{
+  width:40px;
+  height:40px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  border-radius:6px;
+  cursor:pointer;
+  background:rgba(255,255,255,0.1);
+  border:1px solid #c084fc;
+  font-weight:bold;
+  position:relative;
+}
+
+.day:hover{
+  transform:scale(1.1);
+}
+
+.journal-dot{
+  width:6px;
+  height:6px;
+  border-radius:50%;
+  background:#c084fc;
+  position:absolute;
+  bottom:4px;
+  right:4px;
+}
+
+#chartContainer{
+  margin-top:30px;
+  max-width:600px;
+  width:100%;
+}
+
+.legend{
+  display:flex;
+  justify-content:center;
+  margin-top:10px;
+  gap:10px;
+}
+
+.legend div{
+  display:flex;
+  align-items:center;
+  gap:5px;
+  font-size:14px;
+}
+
+.color-box{
+  width:20px;
+  height:20px;
+  border-radius:4px;
+  border:1px solid #333;
+}
+</style>
 </head>
+
 <body>
-  <h1>Ikigai Teen Wellness Tracker</h1>
 
-  <div class="mood-selection">
-    <input type="date" id="datePicker"/>
-    <div class="mood-buttons">
-      <button onclick="setMood('😊 Happy')">😊 Happy</button>
-      <button onclick="setMood('😐 Neutral')">😐 Neutral</button>
-      <button onclick="setMood('😔 Sad')">😔 Sad</button>
-      <button onclick="setMood('😡 Angry')">😡 Angry</button>
-      <button onclick="setMood('😴 Tired')">😴 Tired</button>
-    </div>
-    <div id="todayMood">Selected date mood: Not set</div>
-    <textarea id="journalInput" rows="4" placeholder="Write your journal for today..."></textarea>
-    <button class="saveJournal" onclick="saveJournal()">Save Journal</button>
+<canvas id="bgCanvas"></canvas>
+
+<h1>Ikigai Teen Wellness Tracker</h1>
+
+<div class="mood-selection">
+  <input type="date" id="datePicker"/>
+
+  <div class="mood-buttons">
+    <button onclick="setMood('😊 Happy')">😊 Happy</button>
+    <button onclick="setMood('😐 Neutral')">😐 Neutral</button>
+    <button onclick="setMood('😔 Sad')">😔 Sad</button>
+    <button onclick="setMood('😡 Angry')">😡 Angry</button>
+    <button onclick="setMood('😴 Tired')">😴 Tired</button>
   </div>
 
-  <h2>Calendar</h2>
-  <div id="calendar"></div>
+  <div id="todayMood">Selected date mood: Not set</div>
 
-  <div id="chartContainer">
-    <canvas id="moodChart"></canvas>
-  </div>
+  <textarea id="journalInput" rows="4" placeholder="Write your journal for today..."></textarea>
 
-  <div class="legend">
-    <div><div class="color-box" style="background-color:#4CAF50"></div>Happy</div>
-    <div><div class="color-box" style="background-color:#FFC107"></div>Neutral</div>
-    <div><div class="color-box" style="background-color:#2196F3"></div>Sad</div>
-    <div><div class="color-box" style="background-color:#F44336"></div>Angry</div>
-    <div><div class="color-box" style="background-color:#9E9E9E"></div>Tired</div>
-  </div>
+  <button class="saveJournal" onclick="saveJournal()">Save Journal</button>
+</div>
+
+<h2>Calendar</h2>
+<div id="calendar"></div>
+
+<div id="chartContainer">
+  <canvas id="moodChart"></canvas>
+</div>
+
+<div class="legend">
+  <div><div class="color-box" style="background-color:#4CAF50"></div>Happy</div>
+  <div><div class="color-box" style="background-color:#FFC107"></div>Neutral</div>
+  <div><div class="color-box" style="background-color:#2196F3"></div>Sad</div>
+  <div><div class="color-box" style="background-color:#F44336"></div>Angry</div>
+  <div><div class="color-box" style="background-color:#9E9E9E"></div>Tired</div>
+</div>
+
 <script defer src="./js/script.js"></script>
 
- 
+<!-- ===== PARTICLE BACKGROUND SCRIPT ===== -->
+
+<script>
+const canvas=document.getElementById("bgCanvas");
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.vx=(Math.random()-0.5);
+this.vy=(Math.random()-0.5);
+}
+
+move(){
+this.x+=this.vx;
+this.y+=this.vy;
+
+if(this.x<0||this.x>canvas.width)this.vx*=-1;
+if(this.y<0||this.y>canvas.height)this.vy*=-1;
+}
+
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,2,0,Math.PI*2);
+ctx.fillStyle="#c084fc";
+ctx.shadowBlur=15;
+ctx.shadowColor="#c084fc";
+ctx.fill();
+}
+}
+
+for(let i=0;i<120;i++){
+particles.push(new Particle());
+}
+
+function connectParticles(){
+for(let i=0;i<particles.length;i++){
+for(let j=i;j<particles.length;j++){
+
+let dx=particles[i].x-particles[j].x;
+let dy=particles[i].y-particles[j].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<120){
+ctx.beginPath();
+ctx.strokeStyle="rgba(200,150,255,0.2)";
+ctx.moveTo(particles[i].x,particles[i].y);
+ctx.lineTo(particles[j].x,particles[j].y);
+ctx.stroke();
+}
+}
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+p.move();
+p.draw();
+});
+
+connectParticles();
+requestAnimationFrame(animate);
+}
+
+animate();
+
+window.addEventListener("resize",()=>{
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+});
+</script>
 
 </body>
 </html>

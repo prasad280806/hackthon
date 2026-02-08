@@ -13,8 +13,6 @@
   font-family: "Segoe UI", sans-serif;
 }
 
-
-
 body {
   background: radial-gradient(circle at center, #1b0f2a, #06040d);
   color: #e6dfff;
@@ -29,8 +27,6 @@ body {
   height: 100%;
   z-index: -1;
 }
-
-
 
 .navbar {
   background: rgba(40,20,70,0.7);
@@ -254,6 +250,66 @@ body {
     display: none;
   }
 }
+.quiz-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+}
+
+.quiz-container {
+  background: white;
+  padding: 25px;
+  border-radius: 18px;
+  width: 360px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  text-align: center;
+  position: relative;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.close-btn {
+  position: absolute;
+  right: 10px;
+  top: 8px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.option {
+  background: #fff0f5;
+  border: 2px solid #ff4081;
+  border-radius: 10px;
+  padding: 10px;
+  margin: 8px 0;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.option:hover {
+  background: #ff4081;
+  color: white;
+}
+
+.progress {
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.result {
+  display: none;
+}
+
+.career-card {
+  background: #fff0f5;
+  padding: 10px;
+  border-radius: 10px;
+  margin-top: 10px;
+}
+
 </style>
 </head>
 
@@ -272,9 +328,7 @@ body {
     <a href="#">About</a>
   </div>
   <div class="nav-icons">
-    <span>🔍</span>
-    <span>👤</span>
-    <span>🛒</span>
+    
   </div>
 </nav>
 
@@ -303,7 +357,7 @@ body {
     <img src="https://images.unsplash.com/photo-1527137342181-19aab11a8ee8">
   </div>
   <div class="text-box">
-    <h2>02. Mental Health</h2>
+    <h2>02. Career Helper </h2>
     <p>Strengthen your mind, manage stress, and build focus for school and life.</p>
     <div class="features">
       <div class="feature-pill">🧠 Focus Training</div>
@@ -311,7 +365,10 @@ body {
       <div class="feature-pill">📝 Thought Journals</div>
       <div class="feature-pill">🛡 Confidence Boost</div>
     </div>
-    <a href="quiz.html?topic=mental" class="cta-btn">Calm Your Mind</a>
+    <a href="career-quiz.html" class="cta-btn">
+  Take Career Quiz
+</a>
+
 
   </div>
 </section>
@@ -341,7 +398,7 @@ body {
     <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac">
   </div>
   <div class="text-box">
-    <h2>04. Social Wellness</h2>
+    <h2>04. AI-friend</h2>
     <p>Build healthy friendships, communication skills, and strong connections.</p>
     <div class="features">
       <div class="feature-pill">🗣 Communication</div>
@@ -349,7 +406,10 @@ body {
       <div class="feature-pill">🌍 Community</div>
       <div class="feature-pill">💬 Peer Support</div>
     </div>
-    <a href="quiz.html?topic=social" class="cta-btn">Join Community</a>
+    <a href="bestie-chat.html" class="cta-btn">
+  Open Bestie Chat
+</a>
+
 
   </div>
 </section>
@@ -360,7 +420,7 @@ body {
     <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee">
   </div>
   <div class="text-box">
-    <h2>05. Spiritual Wellness</h2>
+    <h2>05. Mood tracker </h2>
     <p>Discover purpose, inner peace, and mindfulness in everyday moments.</p>
     <div class="features">
       <div class="feature-pill">🧘 Meditation</div>
@@ -398,7 +458,7 @@ body {
     <img src="https://images.unsplash.com/photo-1515378791036-0648a3ef77b2">
   </div>
   <div class="text-box">
-    <h2>07. Mood Tracker</h2>
+    <h2>07.Mental Stability  </h2>
     <p>Track your emotions daily and understand your mental patterns better.</p>
     <div class="features">
       <div class="feature-pill">😊 Daily Check-ins</div>
@@ -436,7 +496,14 @@ body {
 
 <canvas id="bgCanvas"></canvas>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
 <script>
+  const supabase = window.supabase.createClient(
+  "PASTE_PROJECT_URL_HERE",
+  "PASTE_ANON_KEY_HERE"
+);
+
 const canvas = document.getElementById("bgCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -510,6 +577,24 @@ window.addEventListener("resize", () => {
   canvas.height = window.innerHeight;
 });
 </script>
+<!-- QUIZ MODAL -->
+<div id="quizModal" class="quiz-modal">
+  <div class="quiz-container">
+    <span class="close-btn" onclick="closeQuiz()">✖</span>
+
+    <div id="quizBox">
+      <div class="progress" id="progressText">Question 1 of 10</div>
+      <h2 id="questionText"></h2>
+      <div id="optionsBox"></div>
+    </div>
+
+    <div id="resultBox" class="result">
+      <h2>Your Career Matches 🌟</h2>
+      <div id="results"></div>
+      <button onclick="restartQuiz()">Restart Quiz</button>
+    </div>
+  </div>
+</div>
 
 
 </body>

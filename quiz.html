@@ -4,14 +4,27 @@
 <title>Wellness Assessment</title>
 
 <style>
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:"Segoe UI",sans-serif;
+}
+
+body{
 height:100vh;
-background:linear-gradient(135deg,#dff1f1,#f7e9f1);
-display:flex;
-align-items:center;
-justify-content:center;
+background:radial-gradient(circle at center,#1b0f2a,#06040d);
+color:#e6dfff;
+overflow:hidden;
+}
+
+#bgCanvas{
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+z-index:-1;
 }
 
 .layout{
@@ -19,10 +32,13 @@ width:95%;
 max-width:1100px;
 display:grid;
 grid-template-columns:1.1fr 1fr;
-background:rgba(255,255,255,0.9);
+background:rgba(255,255,255,0.08);
+backdrop-filter:blur(14px);
 border-radius:24px;
 overflow:hidden;
-box-shadow:0 20px 60px rgba(0,0,0,0.12);
+box-shadow:0 20px 60px rgba(0,0,0,0.4);
+margin:auto;
+margin-top:80px;
 }
 
 .quiz-panel{padding:50px;}
@@ -34,7 +50,7 @@ align-items:center;
 margin-bottom:20px;
 }
 
-.counter{font-size:14px;color:#666;}
+.counter{font-size:14px;color:#ccc;}
 
 #question{
 font-size:22px;
@@ -67,12 +83,12 @@ box-shadow:0 0 15px rgba(155,139,214,.6);
 display:flex;
 justify-content:space-between;
 font-size:14px;
-color:#666;
+color:#bbb;
 }
 
 .progress{
 height:8px;
-background:#eee;
+background:#333;
 border-radius:10px;
 margin-top:25px;
 overflow:hidden;
@@ -86,7 +102,7 @@ transition:width .4s ease;
 }
 
 .art-panel{
-background:linear-gradient(160deg,#e8f6f5,#f6e8f0);
+background:rgba(255,255,255,0.05);
 display:flex;
 align-items:center;
 justify-content:center;
@@ -106,6 +122,8 @@ opacity:.9;
 
 <body>
 
+<canvas id="bgCanvas"></canvas>
+
 <div class="layout">
 
 <div class="quiz-panel">
@@ -116,7 +134,6 @@ opacity:.9;
 </div>
 
 <div id="question"></div>
-
 <div class="scale" id="scale"></div>
 
 <div class="labels">
@@ -138,7 +155,10 @@ opacity:.9;
 </div>
 
 <script>
-const quiz={
+
+/* QUIZ DATA */
+
+const quiz = {
 
 physical:{
 title:"Physical Wellness Assessment",
@@ -190,34 +210,44 @@ questions:[
 
 };
 
-const params=new URLSearchParams(window.location.search);
-const topic=params.get("topic")||"physical";
-const data=quiz[topic];
+/* SAFE TOPIC LOADING */
 
-document.getElementById("title").innerText=data.title;
+const params = new URLSearchParams(window.location.search);
+let topic = params.get("topic");
 
-let index=0;
-let score=0;
+if (!topic || !quiz[topic]) {
+topic = "physical";
+}
+
+const data = quiz[topic];
+document.getElementById("title").innerText = data.title;
+
+/* QUIZ LOGIC */
+
+let index = 0;
+let score = 0;
 
 function updateCounter(){
-document.getElementById("counter").innerText=
+document.getElementById("counter").innerText =
 (index+1)+" / "+data.questions.length;
 }
 
 function updateProgress(){
-const percent=(index/data.questions.length)*100;
-document.getElementById("bar").style.width=percent+"%";
+const percent = (index/data.questions.length)*100;
+document.getElementById("bar").style.width = percent+"%";
 }
 
 function showQuestion(){
-updateCounter();
-document.getElementById("question").innerText=data.questions[index];
 
-const scale=document.getElementById("scale");
-scale.innerHTML="";
+updateCounter();
+document.getElementById("question").innerText =
+data.questions[index];
+
+const scale = document.getElementById("scale");
+scale.innerHTML = "";
 
 for(let i=1;i<=5;i++){
-const c=document.createElement("div");
+const c = document.createElement("div");
 c.className="circle";
 c.onclick=()=>selectAnswer(c,i);
 scale.appendChild(c);
@@ -227,15 +257,18 @@ updateProgress();
 }
 
 function selectAnswer(el,val){
+
 document.querySelectorAll(".circle")
 .forEach(c=>c.classList.remove("selected"));
+
 el.classList.add("selected");
 
 setTimeout(()=>answer(val),200);
 }
 
 function answer(val){
-score+=val;
+
+score += val;
 index++;
 
 if(index<data.questions.length){
@@ -247,15 +280,97 @@ finishQuiz();
 
 function finishQuiz(){
 
-const maxScore=data.questions.length*5;
-const percent=(score/maxScore)*100;
+const maxScore = data.questions.length*5;
+const percent = (score/maxScore)*100;
 
 localStorage.setItem(topic,percent);
 
-window.location.href="dashboard.html";
+/* change this if dashboard file name different */
+window.location.href="physical-dashboard.html";
+
 }
 
 showQuestion();
+
+/* PARTICLE BACKGROUND */
+
+const canvas = document.getElementById("bgCanvas");
+const ctx = canvas.getContext("2d");
+
+function resize(){
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+}
+
+resize();
+window.addEventListener("resize",resize);
+
+let particles=[];
+
+class Particle{
+constructor(){
+this.x=Math.random()*canvas.width;
+this.y=Math.random()*canvas.height;
+this.vx=(Math.random()-0.5);
+this.vy=(Math.random()-0.5);
+}
+
+move(){
+this.x+=this.vx;
+this.y+=this.vy;
+if(this.x<0||this.x>canvas.width)this.vx*=-1;
+if(this.y<0||this.y>canvas.height)this.vy*=-1;
+}
+
+draw(){
+ctx.beginPath();
+ctx.arc(this.x,this.y,2,0,Math.PI*2);
+ctx.fillStyle="#c084fc";
+ctx.shadowBlur=15;
+ctx.shadowColor="#c084fc";
+ctx.fill();
+}
+}
+
+for(let i=0;i<120;i++){
+particles.push(new Particle());
+}
+
+function connectParticles(){
+
+for(let i=0;i<particles.length;i++){
+for(let j=i;j<particles.length;j++){
+
+let dx=particles[i].x-particles[j].x;
+let dy=particles[i].y-particles[j].y;
+let dist=Math.sqrt(dx*dx+dy*dy);
+
+if(dist<120){
+ctx.beginPath();
+ctx.strokeStyle="rgba(200,150,255,0.2)";
+ctx.moveTo(particles[i].x,particles[i].y);
+ctx.lineTo(particles[j].x,particles[j].y);
+ctx.stroke();
+}
+
+}
+}
+}
+
+function animate(){
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach(p=>{
+p.move();
+p.draw();
+});
+
+connectParticles();
+requestAnimationFrame(animate);
+}
+
+animate();
+
 </script>
 
 </body>
